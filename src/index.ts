@@ -7,7 +7,9 @@ import betsoft from "./routes/betSoft";
 import binance from "./routes/binance";
 import cors from "cors";
 import mongoose from "mongoose";
-import sports from "./model/league";
+import dontenv from "dotenv";
+dontenv.config();
+const DB_URL = process.env.MONGO_DB_URL;
 
 const app = express();
 app.use(json({ limit: "50mb" }));
@@ -27,9 +29,7 @@ app.use("/user", user);
 const start = async (): Promise<void> => {
   try {
     await mongoose
-      .connect(
-        "mongodb+srv://amusatako:CXlogiRIv6K8mICM@cluster0.zic2ust.mongodb.net/?retryWrites=true&w=majority"
-      )
+      .connect(DB_URL as string)
       .then(() => console.log("Connect to mongoDb server"))
       .catch((err) => console.log(err));
     app.listen(4000, () => {

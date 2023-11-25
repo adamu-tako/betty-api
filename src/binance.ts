@@ -1,9 +1,9 @@
 import Binance from "binance-api-node";
+import dontenv from "dotenv";
+dontenv.config();
 
-const apiKey =
-  "q0cu9VvvwTAlejtrS6VdD3JuHzNzkG23MtmvK9b20xsRiKozEy1zPRXmEspldAmd";
-const apiSecret =
-  "Xmqh33oFw8n7vo1UCkM6OxQyLvavCX56wmZWcfsgt5Sv5DdUoDzhRMHHclNnFZuQ";
+const apiKey = process.env.BINANCE_API_KEY;
+const apiSecret = process.env.BINANCE_API_SECRET;
 
 // Authenticated client, can make signed calls
 export const client = Binance({

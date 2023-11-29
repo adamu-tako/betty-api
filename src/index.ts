@@ -30,7 +30,7 @@ const start = async (): Promise<void> => {
   try {
     await mongoose
       .connect(DB_URL as string)
-      .then(() => console.log("Connect to mongoDb server"))
+      .then(() => console.log("Connected to mongoDb server"))
       .catch((err) => console.log(err));
     app.listen(4000, () => {
       console.log("Server started on port 4000");

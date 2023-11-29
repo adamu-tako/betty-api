@@ -31,18 +31,46 @@ const performRequest = async (route: string) => {
 };
 
 export default performRequest;
+type nameObjectAttr = {
+  competition: string;
+  country?: string;
+  division?: string;
+  more?: string;
+};
 
-// async function saveSportsList() {
-//   // Check if the Sports collection already exists
-//   const collections = await mongoose.connection.db.listCollections().toArray();
-//   const sportsCollection = collections.find(
-//     (collection) => collection.name === "sports"
-//   );
+export const processLeagueName = (inputString: string) => {
+  const stringArray = inputString.split(".");
 
-//   if (!sportsCollection) {
-//     await sports.insertMany(sportsList);
-//     console.log("Sports list saved to the database");
-//   } else {
-//     console.log("Sports list already exists in the database");
-//   }
-// }
+  const cleanArray = stringArray
+    .map((segment) => segment.trim().replace(/\.$/, ""))
+    .filter(Boolean);
+  const nameObject: nameObjectAttr = {
+    competition: "",
+  };
+  if (cleanArray.length === 1) {
+    nameObject.competition = cleanArray[0];
+  } else if (cleanArray.length === 2) {
+    nameObject.competition = cleanArray[1];
+    nameObject.country = cleanArray[0];
+  } else if (cleanArray.length > 2) {
+    nameObject.country = cleanArray[0];
+    nameObject.competition = isNaN(parseInt(cleanArray[1]))
+      ? cleanArray[1]
+      : cleanArray[2];
+    nameObject.division = !isNaN(parseInt(cleanArray[1]))
+      ? cleanArray[1]
+      : cleanArray[2];
+    nameObject.more = cleanArray[3];
+  }
+  return nameObject;
+};
+
+export const processLeagueData = (arr: any[]) => {
+  return arr.map((item: { id: number; name: string; icon: string }) => {
+    return {
+      id: item.id || 0,
+      name: processLeagueName(item.name),
+      icon: item.icon,
+    };
+  });
+};

@@ -11,3 +11,4 @@ export const client = Binance({
   apiSecret: apiSecret,
   getTime: () => Date.now(),
 });
+ 

@@ -55,6 +55,6 @@ export const liveEvent = async (req: Request, res: Response) => {
       return res.status(400).send("Failed to fetch competitions");
     }
   } catch (error) {
-    res.status(500).send("Internal Server Error");
+    res.status(500).send(`Internal Server Error: ${error}`);
   }
 };

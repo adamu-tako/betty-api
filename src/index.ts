@@ -5,9 +5,13 @@ import user from "./routes/user";
 import sportrader from "./routes/sportradar";
 import betsoft from "./routes/betSoft";
 import binance from "./routes/binance";
+import { serverIO } from "./routes/binanceSocket";
 import cors from "cors";
 import mongoose from "mongoose";
 import dontenv from "dotenv";
+import { client } from "./binance";
+import { createServer } from "http";
+
 dontenv.config();
 const DB_URL = process.env.MONGO_DB_URL;
 
@@ -26,13 +30,16 @@ app.use("/", betsoft);
 app.use("/", binance);
 app.use("/user", user);
 
+const httpServer = createServer(app);
+serverIO.attach(httpServer);
+
 const start = async (): Promise<void> => {
   try {
     await mongoose
       .connect(DB_URL as string)
       .then(() => console.log("Connected to mongoDb server"))
       .catch((err) => console.log(err));
-    app.listen(4000, () => {
+    httpServer.listen(4000, () => {
       console.log("Server started on port 4000");
     });
   } catch (error) {

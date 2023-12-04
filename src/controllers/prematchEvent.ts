@@ -23,9 +23,7 @@ export const prematchEvent = async (req: Request, res: Response) => {
       const timeDiffInSeconds =
         (currentTime.getTime() - lastFetchTimeInMemory.getTime()) / 1000;
       if (timeDiffInSeconds < 10) {
-        return res
-          .status(200)
-          .json({ data: JSON.parse(dbData.data as string) });
+        return res.status(200).json({ data: dbData.data });
       }
     }
 
@@ -33,28 +31,21 @@ export const prematchEvent = async (req: Request, res: Response) => {
       `https://bet365soft.com/api/v3/prematchEvent?apikey=${API_KEY}&eventId=${eventId}`
     );
     if (response) {
-      if (dbData?.eventId === Number(eventId)) {
-        await PrematchEvent.findOneAndUpdate(
-          { eventId },
-          {
-            $set: {
-              data: JSON.stringify(response.data),
-            },
-          }
-        );
-      } else {
-        const newEvent = new PrematchEvent({
-          eventId,
-          data: JSON.stringify(response.data),
-        });
-        await newEvent.save();
-      }
-      lastFetchTime = new Date();
-      return res.status(response.status).json({ data: response.data });
+      const fprematchData = await PrematchEvent.findOneAndUpdate(
+        { eventId },
+        {
+          $set: {
+            data: response.data,
+            lastFetchTime: new Date(),
+          },
+        },
+        { upsert: true }
+      );
+      return res.status(response.status).json({ data: fprematchData });
     } else {
       return res.status(400).send("Failed to fetch competitions");
     }
   } catch (error) {
-    res.status(500).send("Internal Server Error");
+    res.status(500).send(`Internal Server Error ${error}`);
   }
 };

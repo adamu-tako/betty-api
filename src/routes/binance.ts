@@ -1,11 +1,15 @@
 import { Router, Request, Response } from "express";
 import { client } from "../binance";
 import {
+  accountInfo,
   candlesController,
   dailyStatsController,
+  fetchDepositHistory,
   futuresExchangeInfo,
+  makeOrder,
   pingFutures,
   topCoinPrices,
+  withdraw,
 } from "../controllers/binanceControllers";
 const router = Router();
 
@@ -134,11 +138,15 @@ startTime	Number	false
 endTime	Number	false	
 */
 router.get("/candles", candlesController);
+router.get("/makeOrder", makeOrder);
 /*n THIS ENDPOINT CAN BE USED TO GET THE STAT FOR A COIN, IT DOES THE SAME THE THE `topPrices` ENDPOINT ABOVE.
 get the 24 hour price change statistics, not providing a symbol will return all tickers and is resource-expensive.
 
 params: symbol: String [e.g: "ETHBTC"]
 */
 router.get("/dailyStats", dailyStatsController);
+router.get("/depositHistory", fetchDepositHistory);
+router.get("/withdraw", withdraw);
+router.get("/accountInfo", accountInfo);
 
 export default router;

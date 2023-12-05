@@ -5,15 +5,7 @@ import { coinPairs } from "../controllers/binanceControllers";
 
 const httpServer = createServer({ keepAlive: true });
 
-export const serverIO = new Server(httpServer, {
-  cors: {
-    origin: "*",
-    credentials: false,
-  },
-  transports: ["websocket", "polling"],
-  pingTimeout: 30000,
-  pingInterval: 10000,
-});
+export const serverIO = new Server(httpServer);
 
 serverIO.on("connection", (socket: Socket) => {
   console.log(`Client ${socket.id} connected`);
